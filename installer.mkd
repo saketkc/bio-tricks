@@ -1,0 +1,35 @@
+## Install ZINBA
+```
+install.packages(c('multicore','doMC','foreach','quantreg','R.utils')) 
+system("wget http://zinba.googlecode.com/files/zinba_2.02.03.tar.gz")
+install.packages("zinba_2.02.03.tar.gz", repos=NULL)
+
+
+bowtie-build -f GRCh37.fa GRCCh37.fa
+fastq-dump SRR891275.sra --split-files
+
+/usr/local/bin/bowtie -p 4 -M 1 -q -v 2 -k 1 -X 2000 --best --strata --sam /usr/local/share/bcbio/genomes/Hsapiens/GRCh37/bowtie/GRCh37.fa -1 /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep1___GSM1
+155964/SRR891275_1.fastq -2 /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep1___GSM1155964/SRR891275_2.fastq /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep1___GSM1155964/align/GSM1155964_bowtie/tx/tmpKzYUD9/GSM1155964_bo
+wtie.sam
+
+/usr/local/bin/samtools view -@ 4 -h -S -b /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep1___GSM1155964/align/GSM1155964_bowtie/GSM1155964_bowtie.sam -o /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep
+1___GSM1155964/align/GSM1155964_bowtie/tx/tmpiMX3e5/GSM1155964_bowtie.bam
+
+/usr/local/bin/samtools sort  /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep1___GSM1155964/align/GSM1155964_bowtie/GSM1155964_bowtie.bam /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep1___GSM1155964/a
+lign/GSM1155964_bowtie/tx/tmpt__NI4/GSM1155964_bowtie.sorted
+
+/usr/local/bin/sambamba index -t 4 /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep1___GSM1155964/align/GSM1155964_bowtie/GSM1155964_bowtie.sorted.bam /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep1___
+GSM1155964/align/GSM1155964_bowtie/tx/tmp4LaSRE/GSM1155964_bowtie.sorted.bam.bai
+
+
+
+
+generateAlignability(
+     mapdir='/media/data2/GSE47753/GSM1155964_Bowtie/GSM1155964_bowtie/map', #mappability directory from unpacked mappability files
+     outdir='/media/data2/GSE47753/GSM1155964_Bowtie/GSM1155964_bowtie/Zinba_output', #directory for processed files, used later in analysis
+     athresh=1, #number of hits per read allowed during mapping process
+     extension=200, #average fragment library length
+     twoBitFile='/media/data2/GSE47753/GSM1155964_Bowtie/GSM1155964_bowtie/hg19.2bit', #path to downloaded genome build file in .2bit format
+)
+
+```

@@ -1,0 +1,20 @@
+##gettext
+wget http://ftp.gnu.org/pub/gnu/gettext/gettext-0.19.2.tar.xz
+tar xvfJ gettext-0.19.2.tar.xz 
+
+
+##Yaml
+wget -c http://pyyaml.org/download/libyaml/yaml-0.1.5.tar.gz
+cd yaml-0.1.5
+tar -zxvf yaml-0.1.5.tar.gz
+./configure --prefix=$HOME
+make 
+make install
+
+##Ruby
+wget -c http://cache.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p547.tar.gz
+tar -zxvf ruby-1.9.3-p547.tar.gz 
+cd ruby-1.9.3-p547
+./configure --prefix=$HOME --disable-install-doc --with-opt-dir=$HOME
+
+

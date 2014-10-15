@@ -32,3 +32,9 @@ ln -s /usr/bin/gcc $prefix/gcc-4.4
 
 brew doctor
 
+cd ~/
+mkdir ~/.linuxbrew/lib
+ln -s lib ~/.linuxbrew/lib64
+ln -s /usr/lib64/libstdc++.so.6 /lib64/libgcc_s.so.1 ~/.linuxbrew/lib/
+brew install glibc
+

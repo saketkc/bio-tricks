@@ -51,7 +51,8 @@ brew install curl expat git
 brew tap homebrew/dupes
 brew tap homebrew/science
 brew install python
+brew install --without-x11 r 
 brew install bzip2 coreutils findutils gawk gnu-sed gnu-which grep libpng libxml2 libxslt make readline 
-brew install r samtools tophat bowtie bowtie2 bwa sratoolkit
+brew install samtools tophat bowtie bowtie2 bwa sratoolkit
 
 

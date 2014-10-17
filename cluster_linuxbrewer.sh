@@ -52,7 +52,14 @@ brew tap homebrew/dupes
 brew tap homebrew/science
 brew install python
 brew install --without-x11 r 
-brew install bzip2 coreutils findutils gawk gnu-sed gnu-which grep libpng libxml2 libxslt make readline 
+brew install bzip2 coreutils findutils gawk gnu-sed gnu-which grep libpng libxml2 libxslt make ncurses readline 
+
+##Ncurses hacks
+ln -s $LINUXBREWHOME/Cellar/ncurses/5.9/include/ncursesw/* $LINUXBREWHOME/include/
+ln -s $LINUXBREWHOME/Cellar/ncurses/5.9/lib/libncurses.so $LINUXBREWHOME/lib/libncurses.so
+ln -s $LINUXBREWHOME/Cellar/ncurses/5.9/lib/libncurses.so $LINUXBREWHOME/lib/libcurses.so
+
+
 brew install samtools tophat bowtie bowtie2 bwa sratoolkit
 
 

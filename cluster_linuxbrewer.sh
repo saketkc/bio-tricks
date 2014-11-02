@@ -50,7 +50,7 @@ export HOMEBREW_CC=gcc-4.9
 brew install curl expat git
 brew tap homebrew/dupes
 brew tap homebrew/science
-brew install python
+brew install ruby python
 brew install --without-x11 r 
 brew install bzip2 coreutils findutils gawk gnu-sed gnu-which grep libpng libxml2 libxslt make ncurses readline 
 

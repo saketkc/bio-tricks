@@ -1,15 +1,20 @@
-#!/usr/bin/bash
-## Install linuxbrew on cluster x86_64[login2]
+#!/bin/bash
+# Script to install linuxbrew on cluster 
+# with few other packages required desperately
 
 set -e
 
-export LINUXBREWUSER=skchoudh
-export LINUXBREWHOME=/home/cmb-06/as/$LINUXBREWUSER/linuxbrew
-export PATH=$LINUXBREWHOME/bin:/home/cmb-06/as/skchoudh/software_frozen/bin:$PATH
+#############User Defined##################
+export HOME=/path/to/downloadlocation
+###########################################
 
-export myhome=/home/cmb-06/as/$LINUXBREWUSER
-export scratch=$myhome/scratch
-export software=/home/cmb-06/as/$LINUXBREWUSER/software_frozen
+
+export LINUXBREWUSER=$(whoami)
+export HOMEBREW_HOME=$HOME/linuxbrew
+export software=$HOME/software
+export PATH=$HOMEBREW_HOME/bin:$software:$PATH
+export scratch=$software/scratch
+export HOMEBREW_BUILD_FROM_SOURCE=1
 
 mkdir -p $software
 mkdir -p $scratch && cd $scratch
@@ -31,35 +36,32 @@ make && make install
 
 rm -rf $scratch
 
-cd $myhome
+cd $HOME
 git clone https://github.com/Homebrew/linuxbrew.git linuxbrew
 mkdir linuxbrew/lib
-( cd linuxbrew; ln -s lib lib64 )
+( cd linuxbrew; ln -s lib $HOMEBREW_HOME/lib64 )
 
-ln -s /usr/lib64/libstdc++.so.6 /lib64/libgcc_s.so.1 $LINUXBREWHOME/lib/
+ln -s /usr/lib64/libstdc++.so.6 /lib64/libgcc_s.so.1 $HOMEBREW_HOME/lib/
 brew install glibc
 brew unlink glibc
 brew install https://raw.githubusercontent.com/Homebrew/homebrew-dupes/master/zlib.rb
 brew reinstall binutils
 brew link glibc
 brew install gcc --with-glibc -v
-rm -f $LINUXBREWHOME/lib/{libstdc++.so.6,libgcc_s.so.1}
+rm -f $HOMEBREW_HOME/lib/{libstdc++.so.6,libgcc_s.so.1}
 brew link gcc
 export HOMEBREW_CC=gcc-4.9
 
 brew install curl expat git
 brew tap homebrew/dupes
 brew tap homebrew/science
-brew install ruby python
-brew install --without-x11 r 
+brew install libxml2 python
 brew install bzip2 coreutils findutils gawk gnu-sed gnu-which grep libpng libxml2 libxslt make ncurses readline 
 
 ##Ncurses hacks
-ln -s $LINUXBREWHOME/Cellar/ncurses/5.9/include/ncursesw/* $LINUXBREWHOME/include/
-ln -s $LINUXBREWHOME/Cellar/ncurses/5.9/lib/libncurses.so $LINUXBREWHOME/lib/libncurses.so
-ln -s $LINUXBREWHOME/Cellar/ncurses/5.9/lib/libncurses.so $LINUXBREWHOME/lib/libcurses.so
-
-
-brew install samtools tophat bowtie bowtie2 bwa sratoolkit
-
+#ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/include/ncursesw/* $HOMEBREW_HOME/include/
+#ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/lib/libncurses.so $HOMEBREW_HOME/lib/libncurses.so
+#ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/lib/libncurses.so $HOMEBREW_HOME/lib/libcurses.so
+ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/include/ncursesw/curses.h $HOMEBREWHOME/Cellar/ncurses/5.9/include/ncursesw/ncurses.h ncursesw/termcap.h $HOMEBREW_HOME/include/
+brew install bwa samtools tophat bowtie bowtie2 bwa sratoolkit methpipe
 

@@ -8,6 +8,7 @@ set -e
 export HOME=/path/to/downloadlocation
 ###########################################
 
+# Ideally the settings below should not require editing
 
 export LINUXBREWUSER=$(whoami)
 export HOMEBREW_HOME=$HOME/linuxbrew

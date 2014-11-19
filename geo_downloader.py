@@ -5,18 +5,21 @@ Example:
     python geo_downloader.py --dfile dataset.md [From Methbase-tracker]
     python geo_downloader.py
 """
-
-import csv
+import argparse
 from Bio import Entrez
+from bs4 import BeautifulSoup
+import csv
+from ftplib import FTP
+import futures
+import hashlib
+import json
+import math
 import os
 import sys
-from ftplib import FTP
 import tempfile
-import hashlib
-import shutil
-import argparse
-from bs4 import BeautifulSoup
 import yaml
+
+from hurry.filesize import size
 
 __GEO_LINK_NAME__ = 'GSE Link'
 __NCBI_FTP__ = 'ftp-trace.ncbi.nlm.nih.gov'
@@ -27,12 +30,12 @@ Example: Ensure the results were generated from a Methylation experiment
 {'gdsType': 'Methylation profiling by high throughput sequencing'}"""
 __DATA_CHECKS__ = {}
 # Absolute path where files are downloaded
-__ROOT_DOWNLOAD_LOCATION__ = '/media/data2/'
+__ROOT_DOWNLOAD_LOCATION__ = '/media/saket/LaunchPad'
 __RETMAX__ = 10**9
 
 
 class GEOQuery:
-    def __init__(self, search_term, email="all@smithlabresearch.org"):
+    def __init__(self, search_term=None, email="all@smithlabresearch.org"):
         Entrez.email = email
         # Geo Datasets database
         self.database = 'gds'
@@ -190,7 +193,7 @@ class MarkdownParser:
         return geo_links
 
 
-def is_already_downloaded(temp_file, download_to):
+def is_already_downloaded(download_to):
     """
     Checks if the SRA being downloaded is already present,
     """
@@ -211,29 +214,121 @@ def safe_to_download(temp_file, download_to):
     else:
         return False
 
-def download(download_location=None, sra=None, ncbi_ftp=None):
-    """
-    Pulls SRA from the FTP
-    """
-    if not os.path.exists(download_location):
-        os.makedirs(download_location)
-    temp_dir = tempfile.mkdtemp()
-    download_to = os.path.join(download_location, sra)
-    temp_file = os.path.join(temp_dir, sra)
-    temp_write = open(temp_file, 'wb')
-    ncbi_ftp.retrbinary('RETR {}'.format(sra), temp_write.write)
-    temp_write.close()
-    if is_already_downloaded(temp_file, download_to):
-        print "WARNING: {} already present ".format(download_to)
-        if safe_to_download(temp_file, download_to):
-            shutil.move(temp_file, download_to)
-        else:
-            print sys.stderr.write("ERROR, file being overwritten fails checksum match: {} "
-                                    .format(download_to))
-    else:
-        shutil.move(temp_file, download_to)
-    print "Written: ", sra
-    shutil.rmtree(temp_dir)
+class QueryProcessor:
+    def __init__(self, ids_to_download):
+        self.ids_to_download = ids_to_download
+        self.download_queue = []
+        self.geoQ = GEOQuery()
+        QueryProcessor.ncbi_ftp = FTP(__NCBI_FTP__)
+        # Set passive mode to keep Luigi et al. happy
+        QueryProcessor.ncbi_ftp.set_pasv(True)
+        QueryProcessor.ncbi_ftp.login()
+        QueryProcessor.ncbi_ftp.voidcmd('TYPE I')
+
+    def process(self):
+        for gse_id in self.ids_to_download:
+            gse_location = os.path.join(__ROOT_DOWNLOAD_LOCATION__, gse_id)
+            if not os.path.exists(gse_location):
+                os.makedirs(gse_location)
+            else:
+                sys.stderr.write("WARNING: {} location already exists\n".format(gse_location))
+            gsm_records = self.geoQ.get_gsm_from_gse(gse_id)
+            id_list = gsm_records['IdList']
+            sra_records = geoQ.get_sra_from_gsm(id_list)
+            for sra_record in sra_records:
+                ext_relations = sra_record['ExtRelations']
+                sra_title = sra_record['title'].replace(" ", "__") + "___" + sra_record['Accession']
+                gsm_location = os.path.join(gse_location, sra_title)
+                if not os.path.exists(gsm_location):
+                    os.makedirs(gsm_location)
+                sra_links = filter(lambda x: x['RelationType']=='SRA', ext_relations)
+                assert(len(sra_links) == 1)
+                target_ftp_link = sra_links[0]['TargetFTPLink']
+                QueryProcessor.ncbi_ftp.cwd("/")
+                srp = target_ftp_link.split("/")[-2]
+                QueryProcessor.ncbi_ftp.cwd(target_ftp_link[32:])
+                sra_ids = QueryProcessor.ncbi_ftp.nlst()
+                for index, sra_id in enumerate(sra_ids):
+                    title = sra_title
+                    location = gsm_location
+                    technical_replicate = 0
+                    if len(sra_ids) > 1:
+                        print "Found technical replicates at", target_ftp_link
+                        title += "___R" + str(index+1)
+                        location = os.path.join(gsm_location, "___R" + str(index+1))
+                        technical_replicate = str(index+1)
+                    QueryProcessor.ncbi_ftp.cwd(sra_id)
+                    metadata = geoQ.get_sra_metadata(sra_id)
+                    list_sras = QueryProcessor.ncbi_ftp.nlst()
+                    assert(len(metadata)==1)
+                    assert(len(list_sras)==1)
+
+                    QueryProcessor.ncbi_ftp.voidcmd('TYPE I')
+                    upstream_file_size = QueryProcessor.ncbi_ftp.size(list_sras[0])
+                    strategy = str(BeautifulSoup(metadata[0]['ExpXml']).find('library_strategy').string)
+                    download_dict = {'download_location': location, 'title': title, 'strategy': strategy, 'metadata': metadata,
+                                     'target_ftp_link': target_ftp_link[32:] + sra_id + '/' + list_sras[0],
+                                     'sra': list_sras[0],
+                                     'upstream_file_size': upstream_file_size,
+                                     'technical_replicate': technical_replicate,
+                                     'sra_id': srp
+                                     }
+                    self.download_queue.append(download_dict)
+                    QueryProcessor.ncbi_ftp.cwd("../")
+        walkthrough(self.download_queue)
+        with futures.ThreadPoolExecutor(max_workers=8) as executor:
+            jobs =  [executor.submit(DownloadManager().download(record)) for record in self.download_queue]
+        with open('result.yml', 'w') as yaml_file:
+            yaml_file.write( yaml.dump(self.download_queue, default_flow_style=False))
+
+def walkthrough(queue):
+    sys.stdout.write('The following SRAs are to be downloaded.\nSRA\t\t\tFTPSize\tPartialDownloadSize\tSample ID\tTechnical Replicate(0=no technical replicate)\n')
+    for record in queue:
+        download_location = os.path.join(record['download_location'], record['sra'])
+        upstream_size = record['upstream_file_size']
+        downstream_size = 0
+        if os.path.isfile(download_location):
+            downstream_size = os.path.getsize(download_location)
+        sys.stdout.write("{0}\t\t{1}\t{2}\t{3}\t{4}\n".format(record['sra'], size(upstream_size), size(downstream_size), record['sra_id'], record['technical_replicate']))
+
+
+class DownloadManager(QueryProcessor):
+
+    def __init__(self):
+        pass
+
+    def download(self, record):#download_location, upstream_file, sra_filename):
+        """
+        Pulls SRA from the FTP
+        """
+        self.download_location = record['download_location']
+        self.ncbi_ftp = QueryProcessor.ncbi_ftp
+        self.upstream_file = record['target_ftp_link']#upstream_file
+        self.sra = record['sra']
+        self.downstream_file = None
+        self.upstream_file_size = record['upstream_file_size']
+        self.download_to = os.path.join(self.download_location, self.sra)
+        if not os.path.exists(self.download_location):
+            os.makedirs(self.download_location)
+        downstream_file_size = 0
+        if is_already_downloaded(self.download_to):
+            downstream_file_size = os.path.getsize(self.download_to)
+        with open(self.download_to+'.metadata', 'wb') as f:
+            json.dump(record, f)
+        with open(self.download_to, 'w+b') as downstream_file:
+            self.downstream_file = downstream_file
+            self.downstream_file.seek(downstream_file_size)
+            if downstream_file_size!=0:
+                self.ncbi_ftp.retrbinary('RETR {}'.format(self.upstream_file), callback=self.download_block, blocksize=1024, rest=self.downstream_file.tell())
+            else:
+                self.ncbi_ftp.retrbinary('RETR {}'.format(self.upstream_file), callback=self.download_block, blocksize=1024)
+        self.downstream_file.close()
+        sys.stdout.write("\nWritten: {}\n".format(self.sra))
+
+    def download_block(self, block):
+        percentage = int(math.ceil(100*float(self.downstream_file.tell())/self.upstream_file_size))
+        sys.stdout.write("\r{0}: [{1}{2}] {3}%".format(self.sra, "#"*percentage, ' '*(100-percentage), percentage))
+        self.downstream_file.write(block)
 
 
 if __name__ == '__main__':
@@ -245,15 +340,21 @@ if __name__ == '__main__':
         '--dfile',
         type=str,
         help='Absolute path to markdown dataset file')
+    parser.add_argument(
+        '--gid',
+        type=str,
+        nargs='+',
+        help="Space separated list of GEO Project IDs")
     args = parser.parse_args(sys.argv[1:])
-    ncbi_ftp = FTP(__NCBI_FTP__)
-    ncbi_ftp.login()
     temp_dir = tempfile.mkdtemp()
     if args.dfile:
         fs = MarkdownParser(args.dfile)
         geo_links = fs.get_geo_links()
         project_names = geo_links.keys()
         ids_to_download = [geo_links[key] for key in project_names]
+    elif args.gid:
+        geoQ = GEOQuery()
+        ids_to_download = args.gid
     else:
         geoQ = GEOQuery("\"Methylation profiling by high throughput sequencing\"[DataSet Type]")
         records = geoQ.submit_query()
@@ -279,47 +380,5 @@ if __name__ == '__main__':
             ids_to_download = to_download.split(',')
         elif to_download == "0":
             ids_to_download = [records['Accession'].encode('utf-8') for i, record in enumerate(records)]
-    Samples = {}
-    for gse_id in ids_to_download:
-        gse_location = os.path.join(__ROOT_DOWNLOAD_LOCATION__, gse_id)
-        if not os.path.exists(gse_location):
-            os.makedirs(gse_location)
-        else:
-            sys.stderr.write("WARNING: {} location already exists".format(gse_location))
-        gsm_records = geoQ.get_gsm_from_gse(gse_id)
-        id_list = gsm_records['IdList']
-        sra_records = geoQ.get_sra_from_gsm(id_list)
-        for sra_record in sra_records:
-            ext_relations = sra_record['ExtRelations']
-            sra_title = sra_record['title'].replace(" ", "__") + "___" + sra_record['Accession']
-            gsm_location = os.path.join(gse_location, sra_title)
-            if not os.path.exists(gsm_location):
-                os.makedirs(gsm_location)
-            sra_links = filter(lambda x: x['RelationType']=='SRA', ext_relations)
-            assert(len(sra_links) == 1)
-            target_ftp_link = sra_links[0]['TargetFTPLink']
-            ncbi_ftp.cwd("/")
-            ncbi_ftp.cwd(target_ftp_link[32:])
-            sra_ids = ncbi_ftp.nlst()
-            if len(sra_ids) > 1:
-                print "Found technical replicates at", target_ftp_link
-                for replicate_count, sra_id in enumerate(sra_ids):
-                    replicate_location = os.path.join(gsm_location, sra_title + "___R" + str(replicate_count+1))
-                    ncbi_ftp.cwd(sra_id)
-                    sra_file = ncbi_ftp.nlst()[0]
-                    download(replicate_location, sra_file, ncbi_ftp)
-                    metadata = geoQ.get_sra_metadata(sra_id)
-                    strategy = str(BeautifulSoup(metadata[0]['ExpXml']).find('library_strategy').string)
-                    Samples[str(sra_title) + "___R" + str(replicate_count+1)] = {'Path' : str(os.path.join(replicate_location, sra_id, ".sra")), 'Strategy': strategy}
-                    ncbi_ftp.cwd("../")
-            else:
-                sra_id = sra_ids[0]
-                ncbi_ftp.cwd(sra_id)
-                assert(len(ncbi_ftp.nlst()) == 1)
-                sra_file = ncbi_ftp.nlst()[0]
-                metadata = geoQ.get_sra_metadata(sra_id)
-                strategy = str(BeautifulSoup(metadata[0]['ExpXml']).find('library_strategy').string)
-                Samples[sra_title] = {'Path': str(os.path.join(gsm_location, sra_id, ".sra")), 'Strategy': strategy}
-                download(gsm_location, sra_file, ncbi_ftp)
-        with open('result.yml', 'w') as yaml_file:
-            yaml_file.write( yaml.dump(Samples, default_flow_style=False))
+    qp = QueryProcessor(ids_to_download)
+    qp.process()

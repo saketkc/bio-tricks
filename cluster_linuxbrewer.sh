@@ -6,6 +6,16 @@ set -e
 
 #############User Defined##################
 export HOME=/path/to/downloadlocation
+export brewcache=$HOME/linuxbrew_cache
+export cache=~/.cache
+mpdir -p $brewcache
+if [ -d "$cache" ]; then
+  mv $cache/* $brewcache
+  rm -rf $cache
+fi
+## Home is limisted to 1GB, insufficient to get going!
+ln -s $brewcache $cache
+
 ###########################################
 
 # Ideally the settings below should not require editing

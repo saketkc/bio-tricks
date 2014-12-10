@@ -1,0 +1,10 @@
+language: java
+
+before_install:
+    - sudo apt-get install python-pip
+    - sudo pip install -U requests biopython
+
+install:
+    - python geo_downloader.py --gid GSE47753
+script:
+    - python geo_downloader.py

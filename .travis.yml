@@ -5,6 +5,6 @@ before_install:
     - sudo pip install -U requests biopython beautifulsoup4 futures pyyaml  hurry.filesize
 
 install:
-    - python geo_downloader.py --gid GSE47753 --path $HOME
+    - python geo_downloader.py --gid GSE47753 --path /home/travis/
 script:
     - python geo_downloader.py

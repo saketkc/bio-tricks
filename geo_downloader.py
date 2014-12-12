@@ -30,10 +30,12 @@ Example: Ensure the results were generated from a Methylation experiment
 {'gdsType': 'Methylation profiling by high throughput sequencing'}"""
 __DATA_CHECKS__ = {}
 # Absolute path where files are downloaded
-__ROOT_DOWNLOAD_LOCATION__ = '/media/saket/LaunchPad'
+__ROOT_DOWNLOAD_LOCATION__ = None
 __RETMAX__ = 10**9
 
 
+def _set_root_download_path(path):
+    __ROOT_DOWNLOAD_LOCATION__ = path
 class GEOQuery:
     def __init__(self, search_term=None, email="all@smithlabresearch.org"):
         Entrez.email = email
@@ -345,6 +347,7 @@ if __name__ == '__main__':
         type=str,
         nargs='+',
         help="Space separated list of GEO Project IDs")
+    parser.add_argument('--path', type=str, help="Root download location")
     args = parser.parse_args(sys.argv[1:])
     temp_dir = tempfile.mkdtemp()
     if args.dfile:
@@ -355,6 +358,7 @@ if __name__ == '__main__':
     elif args.gid:
         geoQ = GEOQuery()
         ids_to_download = args.gid
+        _set_root_download_path(args.path)
     else:
         geoQ = GEOQuery("\"Methylation profiling by high throughput sequencing\"[DataSet Type]")
         records = geoQ.submit_query()

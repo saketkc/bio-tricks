@@ -330,7 +330,8 @@ class DownloadManager(QueryProcessor):
 
     def download_block(self, block):
         percentage = int(math.ceil(100*float(self.downstream_file.tell())/self.upstream_file_size))
-        sys.stdout.write("\r{0}: [{1}{2}] {3}%".format(self.sra, "#"*percentage, ' '*(100-percentage), percentage))
+        #sys.stdout.write("\r{0}: [{1}{2}] {3}%".format(self.sra, "#"*percentage, ' '*(100-percentage), percentage))
+        #sys.stdout.flush()
         self.downstream_file.write(block)
 
 

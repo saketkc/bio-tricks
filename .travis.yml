@@ -2,7 +2,7 @@ language: java
 
 before_install:
     - sudo apt-get install python-pip
-    - sudo pip install -U requests biopython beautifulsoup4
+    - sudo pip install -U requests biopython beautifulsoup4 futures
 
 install:
     - python geo_downloader.py --gid GSE47753

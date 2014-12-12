@@ -35,6 +35,7 @@ __RETMAX__ = 10**9
 
 
 def _set_root_download_path(path):
+    global __ROOT_DOWNLOAD_LOCATION__
     __ROOT_DOWNLOAD_LOCATION__ = path
 class GEOQuery:
     def __init__(self, search_term=None, email="all@smithlabresearch.org"):

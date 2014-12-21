@@ -1,0 +1,5 @@
+biopython>=1.65
+beautifulsoup4
+futures
+pyyaml
+hurry.filesize

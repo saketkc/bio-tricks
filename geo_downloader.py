@@ -30,10 +30,13 @@ Example: Ensure the results were generated from a Methylation experiment
 {'gdsType': 'Methylation profiling by high throughput sequencing'}"""
 __DATA_CHECKS__ = {}
 # Absolute path where files are downloaded
-__ROOT_DOWNLOAD_LOCATION__ = '/media/saket/LaunchPad'
+__ROOT_DOWNLOAD_LOCATION__ = None
 __RETMAX__ = 10**9
 
 
+def _set_root_download_path(path):
+    global __ROOT_DOWNLOAD_LOCATION__
+    __ROOT_DOWNLOAD_LOCATION__ = path
 class GEOQuery:
     def __init__(self, search_term=None, email="all@smithlabresearch.org"):
         Entrez.email = email
@@ -327,7 +330,8 @@ class DownloadManager(QueryProcessor):
 
     def download_block(self, block):
         percentage = int(math.ceil(100*float(self.downstream_file.tell())/self.upstream_file_size))
-        sys.stdout.write("\r{0}: [{1}{2}] {3}%".format(self.sra, "#"*percentage, ' '*(100-percentage), percentage))
+        #sys.stdout.write("\r{0}: [{1}{2}] {3}%".format(self.sra, "#"*percentage, ' '*(100-percentage), percentage))
+        #sys.stdout.flush()
         self.downstream_file.write(block)
 
 
@@ -345,6 +349,7 @@ if __name__ == '__main__':
         type=str,
         nargs='+',
         help="Space separated list of GEO Project IDs")
+    parser.add_argument('--path', type=str, help="Root download location")
     args = parser.parse_args(sys.argv[1:])
     temp_dir = tempfile.mkdtemp()
     if args.dfile:
@@ -355,6 +360,7 @@ if __name__ == '__main__':
     elif args.gid:
         geoQ = GEOQuery()
         ids_to_download = args.gid
+        _set_root_download_path(args.path)
     else:
         geoQ = GEOQuery("\"Methylation profiling by high throughput sequencing\"[DataSet Type]")
         records = geoQ.submit_query()

@@ -33,7 +33,9 @@ __DATA_CHECKS__ = {}
 __ROOT_DOWNLOAD_LOCATION__ = None
 __RETMAX__ = 10**9
 
-
+if __ROOT_DOWNLOAD_LOCATION__ is None:
+    sys.stderr.write("Set __ROOT_DOWNLOAD_LOCATION__\n")
+    sys.exit(1)
 def _set_root_download_path(path):
     global __ROOT_DOWNLOAD_LOCATION__
     __ROOT_DOWNLOAD_LOCATION__ = path

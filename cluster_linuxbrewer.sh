@@ -2,14 +2,14 @@
 # Script to install linuxbrew on cluster 
 # with few other packages required desperately
 
-set -e
+set -ex
 
 #############User Defined##################
-export HOME=/path/to/downloadlocation
-export brewcache=$HOME/linuxbrew_cache
 export cache=~/.cache
-mpdir -p $brewcache
-if [ -d "$cache" ]; then
+export HOME=/panfs/cmb-panasas2/skchoudh/software_frozen/brew
+export brewcache=$HOME/linuxbrew_cache
+mkdir -p $brewcache
+if [ -d "$cache" ] && [ "$(ls -A $cache)" ]; then
   mv $cache/* $brewcache
   rm -rf $cache
 fi
@@ -53,6 +53,15 @@ mkdir linuxbrew/lib
 ( cd linuxbrew; ln -s lib $HOMEBREW_HOME/lib64 )
 
 ln -s /usr/lib64/libstdc++.so.6 /lib64/libgcc_s.so.1 $HOMEBREW_HOME/lib/
+
+##Symlink gcc
+
+ln -s $(which gcc) $HOMEBREW_HOME/bin/gcc-$(gcc -dumpversion |cut -d. -f1,2)
+ln -s $(which g++) $HOMEBREW_HOME/bin/g++-$(g++ -dumpversion |cut -d. -f1,2)
+ln -s $(which gfortran) $HOMEBREW_HOME/bin/gfortran-$(g++ -dumpversion |cut -d. -f1,2)
+brew install hello && brew test hello; brew remove hello
+
+export HOMEBREW_CC=$(g++ -dumpversion| cut -d. -f1,2)
 brew install glibc
 brew unlink glibc
 brew install https://raw.githubusercontent.com/Homebrew/homebrew-dupes/master/zlib.rb
@@ -70,9 +79,7 @@ brew install libxml2 python
 brew install bzip2 coreutils findutils gawk gnu-sed gnu-which grep libpng libxml2 libxslt make ncurses readline 
 
 ##Ncurses hacks
-#ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/include/ncursesw/* $HOMEBREW_HOME/include/
-#ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/lib/libncurses.so $HOMEBREW_HOME/lib/libncurses.so
-#ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/lib/libncurses.so $HOMEBREW_HOME/lib/libcurses.so
-ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/include/ncursesw/curses.h $HOMEBREWHOME/Cellar/ncurses/5.9/include/ncursesw/ncurses.h ncursesw/termcap.h $HOMEBREW_HOME/include/
+ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/include/nncursesw/curses.h ncursesw/form.h ncursesw/ncurses.h ncursesw/term.h ncursesw/termcap.h $HOMEBREW_HOME/include/
+ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/lib/libncurses.so $HOMEBREW_HOME/lib/libcurses.so
+ln -s $HOMEBREW_HOME/Cellar/ncurses/5.9/lib/libncurses.a $HOMEBREW_HOME/lib/libcurses.a
 brew install bwa samtools tophat bowtie bowtie2 bwa sratoolkit methpipe
-

@@ -1,39 +1,219 @@
-CD4+_ATACseq_Day1_Rep1___GSM1155964:
-  Path: /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep1___GSM1155964/SRR891275/.sra
-  Strategy: OTHER
-CD4+_ATACseq_Day1_Rep2___GSM1155965:
-  Path: /media/data2/GSE47753/CD4+_ATACseq_Day1_Rep2___GSM1155965/SRR891276/.sra
-  Strategy: OTHER
-CD4+_ATACseq_Day2_Rep1___GSM1155966:
-  Path: /media/data2/GSE47753/CD4+_ATACseq_Day2_Rep1___GSM1155966/SRR891277/.sra
-  Strategy: OTHER
-CD4+_ATACseq_Day2_Rep2___GSM1155967:
-  Path: /media/data2/GSE47753/CD4+_ATACseq_Day2_Rep2___GSM1155967/SRR891278/.sra
-  Strategy: OTHER
-CD4+_ATACseq_Day3_Rep1___GSM1155968:
-  Path: /media/data2/GSE47753/CD4+_ATACseq_Day3_Rep1___GSM1155968/SRR891279/.sra
-  Strategy: OTHER
-CD4+_ATACseq_Day3_Rep2___GSM1155969:
-  Path: /media/data2/GSE47753/CD4+_ATACseq_Day3_Rep2___GSM1155969/SRR891280/.sra
-  Strategy: OTHER
-GM12878_ATACseq_500_Rep1___GSM1155961:
-  Path: /media/data2/GSE47753/GM12878_ATACseq_500_Rep1___GSM1155961/SRR891272/.sra
-  Strategy: OTHER
-GM12878_ATACseq_500_Rep2___GSM1155962:
-  Path: /media/data2/GSE47753/GM12878_ATACseq_500_Rep2___GSM1155962/SRR891273/.sra
-  Strategy: OTHER
-GM12878_ATACseq_500_Rep3___GSM1155963:
-  Path: /media/data2/GSE47753/GM12878_ATACseq_500_Rep3___GSM1155963/SRR891274/.sra
-  Strategy: OTHER
-GM12878_ATACseq_50k_Rep1___GSM1155957:
-  Path: /media/data2/GSE47753/GM12878_ATACseq_50k_Rep1___GSM1155957/SRR891268/.sra
-  Strategy: OTHER
-GM12878_ATACseq_50k_Rep2___GSM1155958:
-  Path: /media/data2/GSE47753/GM12878_ATACseq_50k_Rep2___GSM1155958/SRR891269/.sra
-  Strategy: OTHER
-GM12878_ATACseq_50k_Rep3___GSM1155959:
-  Path: /media/data2/GSE47753/GM12878_ATACseq_50k_Rep3___GSM1155959/SRR891270/.sra
-  Strategy: OTHER
-GM12878_ATACseq_50k_Rep4___GSM1155960:
-  Path: /media/data2/GSE47753/GM12878_ATACseq_50k_Rep4___GSM1155960/SRR891271/.sra
-  Strategy: OTHER
+- download_location: /media/data2/GSE63238/dms4-1__sdr1-1___GSM1544256
+  metadata: !!python/object/new:Bio.Entrez.Parser.ListElement
+    listitems:
+    - !!python/object/new:Bio.Entrez.Parser.StructureElement
+      dictitems:
+        CreateDate: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - 2014/11/17
+          state:
+            tag: CreateDate
+        ExpXml: !!python/object/new:Bio.Entrez.Parser.UnicodeElement
+          args:
+          - "<Summary><Title>GSM1544256: dms4-1 sdr1-1; Arabidopsis thaliana; Bisulfite-Seq</Title><Platform\
+            \ instrument_model=\"Illumina HiSeq 2000\">ILLUMINA</Platform><Statistics\
+            \ total_runs=\"1\" total_spots=\"142430860\" total_bases=\"14385516860\"\
+            \ total_size=\"10219772478\" load_done=\"true\" cluster_name=\"public\"\
+            /></Summary><Submitter acc=\"SRA200960\" center_name=\"GEO\" contact_name=\"\
+            Gene Expression Omnibus (GEO), NCBI, NLM, NIH, htt\" lab_name=\"\"/><Experiment\
+            \ acc=\"SRX758349\" ver=\"1\" status=\"public\" name=\"GSM1544256: dms4-1\
+            \ sdr1-1; Arabidopsis thaliana; Bisulfite-Seq\"/><Study acc=\"SRP049759\"\
+            \ name=\"GSE63238: An Rtf2 domain-containing protein influences pre-mRNA\
+            \ splicing and is essential for embryonic development in Arabidopsis thaliana\"\
+            /><Organism taxid=\"3702\" ScientificName=\"Arabidopsis thaliana\"/><Sample\
+            \ acc=\"SRS743471\" name=\"\"/><Instrument ILLUMINA=\"Illumina HiSeq 2000\"\
+            /><Library_descriptor><LIBRARY_STRATEGY>Bisulfite-Seq</LIBRARY_STRATEGY><LIBRARY_SOURCE>GENOMIC</LIBRARY_SOURCE><LIBRARY_SELECTION>RANDOM</LIBRARY_SELECTION><LIBRARY_LAYOUT>\
+            \ <SINGLE/> </LIBRARY_LAYOUT><LIBRARY_CONSTRUCTION_PROTOCOL>Genomic DNA\
+            \ was isolated with DNeasy Plant Mini Kit (QIAGEN) from mature leaves\
+            \ Briefly, sonicated DNA was end repaired with NEBnext End Repair module\
+            \ (New England Biolabs), adenylated, and ligated to TruSeq barcoded adaptors\
+            \ (illumina) with T4 DNA ligase. Following purification, samples were\
+            \ bisulfite converted with MethylCode Kit (Invitrogen) and then PCR amplified\
+            \ using Pfu Cx Turbo (Agilent) using the following PCR conditions (2 min\
+            \ at 95\xB0C, 4 cycles of 15sec at 98\xB0C, 30sec at 60\xB0C, 4 min at\
+            \ 72\xB0C and 10min at 72\xB0C).</LIBRARY_CONSTRUCTION_PROTOCOL></Library_descriptor><Biosample\
+            \ id=\"3177574\" acc=\"SAMN03177574\" sample_id=\"995775\" sample_acc=\"\
+            SRS743471\"/><Bioproject>SRP049759</Bioproject>"
+          state:
+            tag: ExpXml
+        ExtLinks: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - ''
+          state:
+            tag: ExtLinks
+        !!python/unicode 'Id': !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - '1096957'
+          state:
+            tag: !!python/unicode 'Id'
+        !!python/unicode 'Item': []
+        Runs: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - <Run acc="SRR1649407" total_spots="142430860" total_bases="14385516860"
+            load_done="true" is_public="true" cluster_name="public" static_data_available="true"/>
+          state:
+            tag: Runs
+        UpdateDate: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - 2014/11/13
+          state:
+            tag: UpdateDate
+      state:
+        listkeys:
+        - !!python/unicode 'Item'
+        tag: !!python/unicode 'DocSum'
+    state:
+      tag: !!python/unicode 'eSummaryResult'
+  sra: SRR1649407.sra
+  sra_id: SRX758349
+  strategy: Bisulfite-Seq
+  target_ftp_link: /sra/sra-instant/reads/ByExp/sra/SRX/SRX758/SRX758349/SRR1649407/SRR1649407.sra
+  technical_replicate: 0
+  title: dms4-1__sdr1-1___GSM1544256
+  upstream_file_size: 10219774521
+- download_location: /media/data2/GSE63238/sdr1-1___GSM1544255
+  metadata: !!python/object/new:Bio.Entrez.Parser.ListElement
+    listitems:
+    - !!python/object/new:Bio.Entrez.Parser.StructureElement
+      dictitems:
+        CreateDate: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - 2014/11/17
+          state:
+            tag: CreateDate
+        ExpXml: !!python/object/new:Bio.Entrez.Parser.UnicodeElement
+          args:
+          - "<Summary><Title>GSM1544255: sdr1-1; Arabidopsis thaliana; Bisulfite-Seq</Title><Platform\
+            \ instrument_model=\"Illumina HiSeq 2000\">ILLUMINA</Platform><Statistics\
+            \ total_runs=\"1\" total_spots=\"183107652\" total_bases=\"18493872852\"\
+            \ total_size=\"13147378528\" load_done=\"true\" cluster_name=\"public\"\
+            /></Summary><Submitter acc=\"SRA200960\" center_name=\"GEO\" contact_name=\"\
+            Gene Expression Omnibus (GEO), NCBI, NLM, NIH, htt\" lab_name=\"\"/><Experiment\
+            \ acc=\"SRX758348\" ver=\"1\" status=\"public\" name=\"GSM1544255: sdr1-1;\
+            \ Arabidopsis thaliana; Bisulfite-Seq\"/><Study acc=\"SRP049759\" name=\"\
+            GSE63238: An Rtf2 domain-containing protein influences pre-mRNA splicing\
+            \ and is essential for embryonic development in Arabidopsis thaliana\"\
+            /><Organism taxid=\"3702\" ScientificName=\"Arabidopsis thaliana\"/><Sample\
+            \ acc=\"SRS743472\" name=\"\"/><Instrument ILLUMINA=\"Illumina HiSeq 2000\"\
+            /><Library_descriptor><LIBRARY_STRATEGY>Bisulfite-Seq</LIBRARY_STRATEGY><LIBRARY_SOURCE>GENOMIC</LIBRARY_SOURCE><LIBRARY_SELECTION>RANDOM</LIBRARY_SELECTION><LIBRARY_LAYOUT>\
+            \ <SINGLE/> </LIBRARY_LAYOUT><LIBRARY_CONSTRUCTION_PROTOCOL>Genomic DNA\
+            \ was isolated with DNeasy Plant Mini Kit (QIAGEN) from mature leaves\
+            \ Briefly, sonicated DNA was end repaired with NEBnext End Repair module\
+            \ (New England Biolabs), adenylated, and ligated to TruSeq barcoded adaptors\
+            \ (illumina) with T4 DNA ligase. Following purification, samples were\
+            \ bisulfite converted with MethylCode Kit (Invitrogen) and then PCR amplified\
+            \ using Pfu Cx Turbo (Agilent) using the following PCR conditions (2 min\
+            \ at 95\xB0C, 4 cycles of 15sec at 98\xB0C, 30sec at 60\xB0C, 4 min at\
+            \ 72\xB0C and 10min at 72\xB0C).</LIBRARY_CONSTRUCTION_PROTOCOL></Library_descriptor><Biosample\
+            \ id=\"3177573\" acc=\"SAMN03177573\" sample_id=\"995776\" sample_acc=\"\
+            SRS743472\"/><Bioproject>SRP049759</Bioproject>"
+          state:
+            tag: ExpXml
+        ExtLinks: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - ''
+          state:
+            tag: ExtLinks
+        !!python/unicode 'Id': !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - '1096956'
+          state:
+            tag: !!python/unicode 'Id'
+        !!python/unicode 'Item': []
+        Runs: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - <Run acc="SRR1649406" total_spots="183107652" total_bases="18493872852"
+            load_done="true" is_public="true" cluster_name="public" static_data_available="true"/>
+          state:
+            tag: Runs
+        UpdateDate: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - 2014/11/13
+          state:
+            tag: UpdateDate
+      state:
+        listkeys:
+        - !!python/unicode 'Item'
+        tag: !!python/unicode 'DocSum'
+    state:
+      tag: !!python/unicode 'eSummaryResult'
+  sra: SRR1649406.sra
+  sra_id: SRX758348
+  strategy: Bisulfite-Seq
+  target_ftp_link: /sra/sra-instant/reads/ByExp/sra/SRX/SRX758/SRX758348/SRR1649406/SRR1649406.sra
+  technical_replicate: 0
+  title: sdr1-1___GSM1544255
+  upstream_file_size: 13147380577
+- download_location: /media/data2/GSE63238/dms4-1___GSM1544254
+  metadata: !!python/object/new:Bio.Entrez.Parser.ListElement
+    listitems:
+    - !!python/object/new:Bio.Entrez.Parser.StructureElement
+      dictitems:
+        CreateDate: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - 2014/11/17
+          state:
+            tag: CreateDate
+        ExpXml: !!python/object/new:Bio.Entrez.Parser.UnicodeElement
+          args:
+          - "<Summary><Title>GSM1544254: dms4-1; Arabidopsis thaliana; Bisulfite-Seq</Title><Platform\
+            \ instrument_model=\"Illumina HiSeq 2000\">ILLUMINA</Platform><Statistics\
+            \ total_runs=\"1\" total_spots=\"192033410\" total_bases=\"19395374410\"\
+            \ total_size=\"13765767570\" load_done=\"true\" cluster_name=\"public\"\
+            /></Summary><Submitter acc=\"SRA200960\" center_name=\"GEO\" contact_name=\"\
+            Gene Expression Omnibus (GEO), NCBI, NLM, NIH, htt\" lab_name=\"\"/><Experiment\
+            \ acc=\"SRX758347\" ver=\"1\" status=\"public\" name=\"GSM1544254: dms4-1;\
+            \ Arabidopsis thaliana; Bisulfite-Seq\"/><Study acc=\"SRP049759\" name=\"\
+            GSE63238: An Rtf2 domain-containing protein influences pre-mRNA splicing\
+            \ and is essential for embryonic development in Arabidopsis thaliana\"\
+            /><Organism taxid=\"3702\" ScientificName=\"Arabidopsis thaliana\"/><Sample\
+            \ acc=\"SRS743470\" name=\"\"/><Instrument ILLUMINA=\"Illumina HiSeq 2000\"\
+            /><Library_descriptor><LIBRARY_STRATEGY>Bisulfite-Seq</LIBRARY_STRATEGY><LIBRARY_SOURCE>GENOMIC</LIBRARY_SOURCE><LIBRARY_SELECTION>RANDOM</LIBRARY_SELECTION><LIBRARY_LAYOUT>\
+            \ <SINGLE/> </LIBRARY_LAYOUT><LIBRARY_CONSTRUCTION_PROTOCOL>Genomic DNA\
+            \ was isolated with DNeasy Plant Mini Kit (QIAGEN) from mature leaves\
+            \ Briefly, sonicated DNA was end repaired with NEBnext End Repair module\
+            \ (New England Biolabs), adenylated, and ligated to TruSeq barcoded adaptors\
+            \ (illumina) with T4 DNA ligase. Following purification, samples were\
+            \ bisulfite converted with MethylCode Kit (Invitrogen) and then PCR amplified\
+            \ using Pfu Cx Turbo (Agilent) using the following PCR conditions (2 min\
+            \ at 95\xB0C, 4 cycles of 15sec at 98\xB0C, 30sec at 60\xB0C, 4 min at\
+            \ 72\xB0C and 10min at 72\xB0C).</LIBRARY_CONSTRUCTION_PROTOCOL></Library_descriptor><Biosample\
+            \ id=\"3177575\" acc=\"SAMN03177575\" sample_id=\"995774\" sample_acc=\"\
+            SRS743470\"/><Bioproject>SRP049759</Bioproject>"
+          state:
+            tag: ExpXml
+        ExtLinks: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - ''
+          state:
+            tag: ExtLinks
+        !!python/unicode 'Id': !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - '1096955'
+          state:
+            tag: !!python/unicode 'Id'
+        !!python/unicode 'Item': []
+        Runs: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - <Run acc="SRR1649405" total_spots="192033410" total_bases="19395374410"
+            load_done="true" is_public="true" cluster_name="public" static_data_available="true"/>
+          state:
+            tag: Runs
+        UpdateDate: !!python/object/new:Bio.Entrez.Parser.StringElement
+          args:
+          - 2014/11/13
+          state:
+            tag: UpdateDate
+      state:
+        listkeys:
+        - !!python/unicode 'Item'
+        tag: !!python/unicode 'DocSum'
+    state:
+      tag: !!python/unicode 'eSummaryResult'
+  sra: SRR1649405.sra
+  sra_id: SRX758347
+  strategy: Bisulfite-Seq
+  target_ftp_link: /sra/sra-instant/reads/ByExp/sra/SRX/SRX758/SRX758347/SRR1649405/SRR1649405.sra
+  technical_replicate: 0
+  title: dms4-1___GSM1544254
+  upstream_file_size: 13765769616

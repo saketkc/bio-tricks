@@ -30,7 +30,7 @@ Example: Ensure the results were generated from a Methylation experiment
 {'gdsType': 'Methylation profiling by high throughput sequencing'}"""
 __DATA_CHECKS__ = {}
 # Absolute path where files are downloaded
-__ROOT_DOWNLOAD_LOCATION__ = None
+__ROOT_DOWNLOAD_LOCATION__ = "/media/data2/"
 __RETMAX__ = 10**9
 
 if __ROOT_DOWNLOAD_LOCATION__ is None:

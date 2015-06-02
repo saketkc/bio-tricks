@@ -50,18 +50,18 @@ def main(argv):
     for position in max_occur:
         motif_scores.append(position[0][1])
     pr = pearsonr(np.array(motif_scores), np.array(phylo_scores))
+    print 'Pearson correlation: {}'.format(pr)
     fig, ax = plt.subplots()
     ax= sns.regplot(y=np.array(motif_scores), x=np.array(phylo_scores), scatter=True)
-    ax.set(ylabel="Motif Counts", xlabel="PhyloP scores", title='CTCF | pearsonr = {}'.format(pr[0]));
-    fig.savefig('scatter.png')
+    ax.set(ylabel="Count of most freq nucleotide", xlabel="PhyloP scores", title='CTCF | pearsonr = {}, p-val={}'.format(pr[0],pr[1]));
+    fig.savefig('{}_motif{}_scatter.png'.format(parsed.phylo, parsed.motif))
     x = np.linspace(1,len(phylo_scores)+1,num=len(phylo_scores), endpoint=False)
-    print x
     f, (ax1, ax2) = plt.subplots(2, 1)
     x1 = sns.barplot(x,y=np.array(motif_scores), ax=ax1)
     x2 = sns.barplot(x,y=np.array(phylo_scores), ax=ax2)
-    x1.set(ylabel='Motif counts', xlabel='Position in motif')
+    x1.set(ylabel='Counts of most freq nucleotide', xlabel='Position in motif')
     x2.set(ylabel='Phylop Score', xlabel='Position in motif')
     f.tight_layout()
-    f.savefig('tight.png')
+    f.savefig('{}_motif{}_trend.png'.format(parsed.phylo, parsed.motif))
 if __name__ == "__main__":
     main(sys.argv[1:])

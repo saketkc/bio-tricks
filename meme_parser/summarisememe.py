@@ -9,6 +9,6 @@ def main(argv):
     records = motifs.parse(handle, 'meme')
     print "Total motifs present: {}".format(len(records))
     for i, record in enumerate(records):
-        print "Motif {} \t Length: {}".format(i, len(record.consensus))
+        print "Motif {} \t Length: {} \t, Seq: {}".format(i, len(record.consensus), record.consensus)
 if __name__ == '__main__':
     main(sys.argv[1:])

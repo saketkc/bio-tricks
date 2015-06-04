@@ -39,25 +39,26 @@ def main(argv):
                             '{}'.format(flanking_sequences[0])], cwd=path)
         fimo_in = os.path.join(fimo_path, 'fimo.txt')
         fimo_2_out = os.path.join(fimo_path, 'fimo_2_sites.txt')
-        phyloP100way_out = os.path.join(fimo_path, '100way_site_conservation.txt.stats')
+        phyloP100way_out = os.path.join(fimo_path, '100way_site_conservation.txt')
+        phyloP46way_out = os.path.join(fimo_path, '46way_site_conservation.txt')
         subprocess.call(['fimo_2_sites', 'fimo_file={}'.format(fimo_in), 'output_file={}'.format(fimo_2_out)], cwd=path)
         subprocess.call(['calculate_site_conservation',
                             'sites_file={}'.format(fimo_2_out),
                             'genome_table={}'.format(__genome_table__),
                             'wig_file={}'.format(__phyloP100way__),
-                            'output_file=100way_site_conservation.txt'], cwd=path)
+                            'output_file={}'.format(phyloP100way_out)], cwd=path)
         subprocess.call(['calculate_site_conservation',
                             'sites_file={}'.format(fimo_2_out),
                             'genome_table={}'.format(__genome_table__),
                             'wig_file={}'.format(__phyloP46way__),
-                            'output_file=46way_site_conservation.txt'], cwd=path)
+                            'output_file={}'.format(phyloP46way_out)], cwd=path)
         subprocess.call(['meme_processor.py',
                             '-i', meme_file,
-                            '-c', '100way_site_conservation.txt.stats',
+                            '-c', '{}.{}'.format(phyloP100way_out,'stats'),
                             '-m', str(motif)], cwd=fimo_path)
         subprocess.call(['meme_processor.py',
-                            '-i', '../meme_analysis/meme.txt',
-                            '-c', '46way_site_conservation.txt.stats',
+                            '-i', meme_file,
+                            '-c', '{}.{}'.format(phyloP46way_out,'stats'),
                             '-m', str(motif)], cwd=fimo_path)
 
 if __name__ == '__main__':

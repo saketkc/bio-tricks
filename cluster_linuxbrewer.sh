@@ -48,7 +48,7 @@ make && make install
 rm -rf $scratch
 
 cd $HOME
-git clone https://github.com/Homebrew/linuxbrew.git linuxbrew
+git clone --depth=1 --branch=master https://github.com/Homebrew/linuxbrew.git linuxbrew
 mkdir linuxbrew/lib
 ( cd linuxbrew; ln -s lib $HOMEBREW_HOME/lib64 )
 

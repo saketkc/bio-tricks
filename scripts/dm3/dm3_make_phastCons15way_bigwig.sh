@@ -14,8 +14,9 @@ sed -i.orig -e '4963003d' chr2R.pp
 
 ## Fix for:
 ## There's more than one value for chr3L base 7000001 (in coordinates that start with 1).
+## There's more than one value for chr3R base 25000001 (in coordinates that start with 1).
 
-sed -i.orig -e '6969685d' chr3R.pp
+sed -i.orig -e '19958965d;6969685d;24945858d' chr3R.pp
 
 
 ## Fix for:
@@ -30,6 +31,11 @@ sed -i.orig -e '11943831d' chrX.pp
 
 
 sed -i.orig -e '6993258d;10989627d;18983630d' chr3L.pp
+
+## Fix for:
+## There's more than one value for chrX base 14000001 (in coordinates that start with 1).
+
+sed -i.orig -e '13942347d' chrX.pp
 
 cat *.pp > dm3.15way.phastCons.wig
 wigToBigWig dm3.15way.phastCons.wig ../fasta/dm3.chrom.sizes dm3.15way.phastCons.bw

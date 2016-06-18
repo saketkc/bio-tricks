@@ -23,7 +23,7 @@ def parser(encode_id):
     metadata = {}
     for f in files:
         href = f['href']
-        if f['file_type'] == FASTQ:
+        if f['file_type'] == FILE_TYPE:
             if replicates == 1:
                 bio_repl = 1
                 tech_repl = 1
@@ -32,7 +32,7 @@ def parser(encode_id):
                     bio_repl = f['replicate']['biological_replicate_number']
                     tech_repl = f['replicate']['technical_replicate_number']
                 except KeyError:
-                    bio_repl = f['biological_replicate'][0]
+                    bio_repl = f['biological_replicates'][0]
                     tech_repl = 1
 
             if tech_repl not in metadata.keys():
@@ -48,7 +48,10 @@ def downloader(files, metadata, path):
             href = BASE_URL + metadata[tech_repl][bio_repl]['href']
             mdata = metadata[tech_repl][bio_repl]['metadata']
             location = os.path.join(path, 'tech_repl_{}'.format(tech_repl), 'bio_repl_{}'.format(bio_repl))
-            os.makedirs(location)
+            try:
+                os.makedirs(location)
+            except OSError:
+                pass
             with open(os.path.join(location, 'metadata.json'), 'w') as w:
                 json.dump(mdata, w)
             subprocess.call(['wget', '-c', href, '-P', location])
@@ -70,22 +73,23 @@ def control_downloader(controls=[], TF_data_path=''):
 
 
 def encode_downloader(args):
-    encode_id = args[0]
-    parsed = parser(encode_id)
-    biosample = parsed['biosample']
-    label = parsed['label']
-    controls = parsed['controls']
-    replicates = parsed['replicates']
-    files = parsed['files']
-    job_name = '{}_{}_{}'.format(biosample, label, encode_id)
-    metadata = parsed['metadata']
-    path = os.path.join(ROOT_DIR, job_name)
-    print 'Downloading controls'#, controls
-    control_downloader(controls, path)
-    downloader(files, metadata, path)
+    for encode_id in args:
+        encode_id = args[0]
+        parsed = parser(encode_id)
+        biosample = parsed['biosample']
+        label = parsed['label']
+        controls = parsed['controls']
+        replicates = parsed['replicates']
+        files = parsed['files']
+        job_name = '{}_{}_{}'.format(biosample, label, encode_id)
+        metadata = parsed['metadata']
+        path = os.path.join(ROOT_DIR, job_name)
+        print 'Downloading controls'#, controls
+        control_downloader(controls, path)
+        downloader(files, metadata, path)
 
 if __name__=='__main__':
     if len(sys.argv)<2:
-        print 'Run: $ python encode_downloader.py <encode_id>'
+        print 'Run: $ python encode_downloader.py <encode_id1> <encode_id2> ...'
         sys.exit(1)
     encode_downloader(sys.argv[1:])

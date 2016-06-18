@@ -2,14 +2,14 @@
 """
 Encode data downloader(Only BAMs are downloaded)
 """
-import requests
-import json
-import subprocess
-import sys
 import os
+import json
+import sys
+import subprocess
+import requests
 
-__base_url__ = 'https://www.encodeproject.org/'
-download_prefix = "/media/data1/ENCODE"
+BASE_URL = 'https://www.encodeproject.org/'
+ROOT_DIR = "/media/data1/ENCODE"
 
 def parser(encode_id):
     req = requests.get("https://www.encodeproject.org/experiments/{}/?format=json".format(encode_id))
@@ -27,8 +27,13 @@ def parser(encode_id):
                 bio_repl = 1
                 tech_repl = 1
             else:
-                bio_repl = f['replicate']['biological_replicate_number']
-                tech_repl = f['replicate']['technical_replicate_number']
+                try:
+                    bio_repl = f['replicate']['biological_replicate_number']
+                    tech_repl = f['replicate']['technical_replicate_number']
+                except KeyError:
+                    bio_repl = f['biological_replicate']
+                    tech_repl = 1
+
             if tech_repl not in metadata.keys():
                 metadata[tech_repl] = {}
             if bio_repl not in metadata[tech_repl].keys():
@@ -39,7 +44,7 @@ def parser(encode_id):
 def downloader(files, metadata, path):
     for tech_repl in metadata.keys():
         for bio_repl in metadata[tech_repl].keys():
-            href = __base_url__ + metadata[tech_repl][bio_repl]['href']
+            href = BASE_URL + metadata[tech_repl][bio_repl]['href']
             mdata = metadata[tech_repl][bio_repl]['metadata']
             location = os.path.join(path, "tech_repl_{}".format(tech_repl), "bio_repl_{}".format(bio_repl))
             os.makedirs(location)
@@ -73,9 +78,13 @@ def encode_downloader(args):
     files = parsed['files']
     job_name = "{}_{}_{}".format(biosample, label, encode_id)
     metadata = parsed['metadata']
-    path = os.path.join(download_prefix, job_name)
+    path = os.path.join(ROOT_DIR, job_name)
     print "Downloading controls"#, controls
     control_downloader(controls, path)
     downloader(files, metadata, path)
+
 if __name__=="__main__":
+    if len(sys.argv)<2:
+        print 'Run: $ python encode_downloader.py <encode_id>'
+        sys.exit(1)
     encode_downloader(sys.argv[1:])

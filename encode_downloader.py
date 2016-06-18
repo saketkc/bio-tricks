@@ -1,18 +1,19 @@
 #!/usr/bin/env python
-"""
-Encode data downloader(Only BAMs are downloaded)
-"""
+'''
+Encode data downloader(BAM/FastQ)
+'''
 import os
 import json
 import sys
 import subprocess
 import requests
 
-BASE_URL = 'https://www.encodeproject.org/'
-ROOT_DIR = "/media/data1/ENCODE"
+ROOT_DIR = '/media/data1/ENCODE'
+FILE_TYPE = 'bam' #'fastq'
 
+BASE_URL = 'https://www.encodeproject.org/'
 def parser(encode_id):
-    req = requests.get("https://www.encodeproject.org/experiments/{}/?format=json".format(encode_id))
+    req = requests.get('https://www.encodeproject.org/experiments/{}/?format=json'.format(encode_id))
     response_json = req.json()
     biosample = response_json['biosample_term_name']
     label = response_json['target']['label']
@@ -22,7 +23,7 @@ def parser(encode_id):
     metadata = {}
     for f in files:
         href = f['href']
-        if f['file_type']== 'bam':
+        if f['file_type'] == FASTQ:
             if replicates == 1:
                 bio_repl = 1
                 tech_repl = 1
@@ -31,7 +32,7 @@ def parser(encode_id):
                     bio_repl = f['replicate']['biological_replicate_number']
                     tech_repl = f['replicate']['technical_replicate_number']
                 except KeyError:
-                    bio_repl = f['biological_replicate']
+                    bio_repl = f['biological_replicate'][0]
                     tech_repl = 1
 
             if tech_repl not in metadata.keys():
@@ -39,31 +40,31 @@ def parser(encode_id):
             if bio_repl not in metadata[tech_repl].keys():
                 metadata[tech_repl][bio_repl] = {}
             metadata[tech_repl][bio_repl] = {'href': href, 'metadata':f}
-    return {"replicates": replicates, "controls": controls, "label": label, "files": files, "biosample":biosample, "metadata":metadata}
+    return {'replicates': replicates, 'controls': controls, 'label': label, 'files': files, 'biosample':biosample, 'metadata':metadata}
 
 def downloader(files, metadata, path):
     for tech_repl in metadata.keys():
         for bio_repl in metadata[tech_repl].keys():
             href = BASE_URL + metadata[tech_repl][bio_repl]['href']
             mdata = metadata[tech_repl][bio_repl]['metadata']
-            location = os.path.join(path, "tech_repl_{}".format(tech_repl), "bio_repl_{}".format(bio_repl))
+            location = os.path.join(path, 'tech_repl_{}'.format(tech_repl), 'bio_repl_{}'.format(bio_repl))
             os.makedirs(location)
-            with open(os.path.join(location, "metadata.json"), 'w') as w:
+            with open(os.path.join(location, 'metadata.json'), 'w') as w:
                 json.dump(mdata, w)
-            subprocess.call(["wget", "-c", href, "-P", location])
+            subprocess.call(['wget', '-c', href, '-P', location])
 
 
-def control_downloader(controls=[], TF_data_path=""):
+def control_downloader(controls=[], TF_data_path=''):
     print len(controls)
     for control in controls:
         encode_id = control['accession']
-        print "Downloading control: ", encode_id
+        print 'Downloading control: ', encode_id
         parsed = parser(encode_id)
         biosample = parsed['biosample']
         label = parsed['label']
         metadata = parsed['metadata']
         files = parsed['files']
-        job_name = "{}_{}_{}".format(biosample, label, encode_id)
+        job_name = '{}_{}_{}'.format(biosample, label, encode_id)
         downloader(files, metadata, os.path.join(TF_data_path, job_name))
 
 
@@ -76,14 +77,14 @@ def encode_downloader(args):
     controls = parsed['controls']
     replicates = parsed['replicates']
     files = parsed['files']
-    job_name = "{}_{}_{}".format(biosample, label, encode_id)
+    job_name = '{}_{}_{}'.format(biosample, label, encode_id)
     metadata = parsed['metadata']
     path = os.path.join(ROOT_DIR, job_name)
-    print "Downloading controls"#, controls
+    print 'Downloading controls'#, controls
     control_downloader(controls, path)
     downloader(files, metadata, path)
 
-if __name__=="__main__":
+if __name__=='__main__':
     if len(sys.argv)<2:
         print 'Run: $ python encode_downloader.py <encode_id>'
         sys.exit(1)
